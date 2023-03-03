@@ -17,19 +17,25 @@ export default {
 };
 </script>
 <style>
-#inspire{
-   background-color: #f2d2b6;
-   margin: 32px;
-}
-.v-application--wrap{
+/* #inspire{ */
+   /* background-color: #f2d2b6; */
+   /* margin: 32px; */
+/* } */
+/* .v-application--wrap{
     display: inline;
     background-color: #f2d2b6;
-
-}
+} */
 h1{
-    color: #F2EDE4;
+    color: black;
     font-family: "Gopher";
-    font-size: 32px;
+    font-size: 48px;
+    margin: 32px;
+    text-align: center;
+}
+h3{
+    color: black;
+    font-family: "Gopher";
+    font-size: 24px;
     margin: 32px;
     text-align: center;
 }

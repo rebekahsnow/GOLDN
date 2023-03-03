@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar  app color="#f2d2b6" :elevation="0" height="100px">
+  <v-app-bar  app color=transparent :elevation="0" height="100px">
     <v-toolbar-title class="title">
       <router-link to="/" class="logo">GOLDEN</router-link>
     </v-toolbar-title>
