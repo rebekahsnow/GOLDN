@@ -1,20 +1,18 @@
 <template>
   <v-app id="inspire">
-    <Header />
     <div>
-      <div class="welcome">
-        <h1>Find the perfect photographer</h1>
-        <p>
-          Welcome to Golden, the ultimate platform for finding the perfect local
-          photographer for your event without breaking the bank! Whether you're
-          planning a wedding, birthday party, or corporate event, we've got you
-          covered. With our user-friendly search tool, you can easily filter
-          through our database of talented photographers to find the perfect
-          match for your needs and budget. Say goodbye to the hassle of endless
-          searching and let us help you capture your special moments with ease.
-          Let's get started!</p>
-        
-      </div>
+      <v-app-bar color="transparent" :elevation="0" height="100px">
+        <v-toolbar-title class="title">
+          <router-link to="/search" class="logo">GOLDN.</router-link>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items class="hidden-sm-and-down" id="pad">
+          <v-btn text to="/login">Sign In</v-btn>
+          <v-btn text to="/register">Register</v-btn>
+          <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
+        </v-toolbar-items>
+      </v-app-bar>
+
       <div class="bar">
         <v-autocomplete
           :items="available_types"
@@ -40,105 +38,132 @@
           <v-icon @click="search()">mdi-magnify</v-icon>
         </div>
       </div>
-      <v-card>
-        <div class="col-md-6">
-          <!-- <div>match {{ user_match }}</div> -->
-          <div v-for="user in user_match" :key="user.id">
-            <h3>{{ user.fname }} {{ user.lname }}</h3>
-            {{ user.services[0].type }} Photographer in {{ user.location }}
-            <br />
-            Packages from ${{ user.services[0].min }} to ${{
-              user.services[0].max
-            }}
+
+      <div
+        v-for="photographer in photographer_match"
+        :key="photographer.id"
+        style="margin: 30px 0px"
+      >
+        <v-card class="results">
+          <div>
+            <div class="align2"></div>
+            <div class="align2" id="photographer_details">
+              <h3 style="color: #014023">
+                {{ photographer.fname }} {{ photographer.lname }}
+              </h3>
+              {{ photographer.location }}
+              {{ photographer.type }} packages from ${{ photographer.min }} to
+              ${{ photographer.max }}
+            </div>
           </div>
-        </div>
-      </v-card>
+        </v-card>
+      </div>
     </div>
   </v-app>
 </template>
 <script>
-import Header from "../components/TheHeader.vue";
+// import Header from "../components/TheHeader.vue";
 import { db } from "../config.js";
+
 export default {
   data() {
     return {
-      users: [],
+      photographers: [],
       type_selected: "",
       location_selected: "",
       budget_selected: 0,
       min_selected: 0,
-      available_types: ["wedding", "engagements", "family", "senior portraits"],
+      available_types: ["Wedding", "Engagements", "Family", "Senior Portraits"],
       available_locations: ["St.George", "Cedar City", "Provo"],
       budget_prices: [
         30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900,
         1000, 2000, 4000,
       ],
-      show_results: false,
-      user_match: [],
+      show_results: true,
+      photographer_match: [],
+      loading: false,
+      selection: 1,
     };
   },
   created() {
-    db.collection("users").onSnapshot((res) => {
-      const changes = res.docChanges();
-      changes.forEach((change) => {
-        if (change.type == "added") {
-          this.users.push({
-            ...change.doc.data(),
-            id: change.doc.id,
-          });
-        } else if (change.type == "removed") {
-          this.users = this.users.filter((user) => user.id != change.doc.id);
-        } else if (change.type == "modified") {
-          this.users = this.users.map((user) => {
-            if (user.id == change.doc.id) {
-              return {
-                ...change.doc.data(),
-                id: change.doc.id,
-              };
-            } else {
-              return user;
-            }
-          });
-        } else {
-          console.log("error");
-        }
-      });
-    });
+    this.getPhotographers();
+    this.populateSearch();
+
+    //why isnt search being called with a full list of photographers?
+    this.search();
   },
   methods: {
-    search() {
-      console.log("search");
-      this.user_match = [];
-      this.users.forEach((user) => {
-        if (
-          user.services[0].type == this.type_selected &&
-          user.location == this.location_selected &&
-          user.services[0].max >= this.budget_selected &&
-          user.services[0].min <= this.budget_selected
-        ) {
-          console.log("match");
-          this.user_match.push(user);
-        }
+    populateSearch() {
+      this.type_selected = localStorage.getItem("type");
+      this.location_selected = localStorage.getItem("location");
+      console.log(this.location_selected);
+      this.budget_selected = parseInt(localStorage.getItem("budget"));
+    },
+    getPhotographers() {
+      db.collection("photographers").onSnapshot((res) => {
+        const changes = res.docChanges();
+        changes.forEach((change) => {
+          if (change.type == "added") {
+            this.photographers.push({
+              ...change.doc.data(),
+              id: change.doc.id,
+            });
+          }
+          // else if (change.type == "removed") {
+          //   this.photographers = this.photographers.filter(
+          //     (photographer) => photographer.id != change.doc.id
+          //   );
+          // } else if (change.type == "modified") {
+          //   this.photographers = this.photographers.map((photographer) => {
+          //     if (photographer.id == change.doc.id) {
+          //       return {
+          //         ...change.doc.data(),
+          //         id: change.doc.id,
+          //       };
+          //     } else {
+          //       return photographer;
+          //     }
+          //   });
+          // } else {
+          //   console.log("error");
+          // }
+        });
       });
     },
-    // onFormSubmit(event) {
-    //   event.preventDefault();
-    //   db.collection("users")
-    //     .add(this.user)
-    //     .then(() => {
-    //       alert("User successfully created!");
-    //       this.user.name = "";
-    //       this.user.email = "";
-    //       this.user.phone = "";
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    search() {
+      console.log("search");
+      this.photographer_match = [];
+      console.log("this should be full", this.photographers);
+
+      this.photographers.forEach((photographer) => {
+        //loop through services
+
+        photographer.services.forEach((service) => {
+          if (
+            service.type == this.type_selected &&
+            photographer.location == this.location_selected &&
+            // service.max >= this.budget_selected &&
+            service.min <= this.budget_selected
+          ) {
+            console.log("match");
+            this.photographer_match.push({
+              fname: photographer.fname,
+              lname: photographer.lname,
+              location: photographer.location,
+              type: service.type,
+              max: service.max,
+              min: service.min,
+            });
+          } else {
+            console.log("no match");
+          }
+        });
+      });
+    },
   },
-  components: {
-    Header,
-  },
+  // components: {
+  //   Header,
+  // },
 };
 </script>
 <style scoped>
@@ -152,21 +177,27 @@ html,
 body {
   height: 100%;
 }
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: sans-serif;
-  background: url("https://images.unsplash.com/photo-1580196969807-cc6de06c05be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1579&q=80");
-  background-size: cover;
-  background-repeat: no-repeat;
+#inspire {
+  background-color: #f2ede4;
 }
+.logo {
+  color: #014023;
+  text-decoration: none;
+  font-family: "Gopher-Heavy";
+  font-size: 36px;
+  margin: 36px;
+}
+#pad {
+  color: #014023;
+  margin-right: 36px;
+  font-family: "Gopher";
+}
+
 .p {
   margin-bottom: 0px;
 }
 
-.welcome{
+.welcome {
   border: 6px solid #ca6b0b;
   padding: 36px;
   padding-right: 136px;
@@ -188,7 +219,25 @@ body {
   margin: auto;
   margin-top: 36px;
 }
-
+.results {
+  height: 250px;
+  width: 70%;
+  border-radius: 40px;
+  margin: auto;
+}
+.alignContainer {
+  padding: 20px;
+}
+.align2 {
+}
+.result_images {
+  width: 200px;
+  display: flex;
+}
+#photographer_details {
+  text-align: center;
+  color: #014023;
+}
 .bar div {
   border-radius: inherit;
   padding: 1.2rem 1.5rem;

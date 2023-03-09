@@ -4,7 +4,7 @@
     <div>
       <v-app-bar color="transparent" :elevation="0" height="100px">
         <v-toolbar-title class="title">
-          <router-link to="/" class="logo">GOLDEN</router-link>
+          <router-link to="/search" class="logo">GOLDN.</router-link>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
@@ -14,8 +14,8 @@
         </v-toolbar-items>
       </v-app-bar>
       <div class="welcome">
-        <h1>Find the perfect photographer for your next golden hour needs.</h1>
-        <h3 id="info">At the right price and exactly where you need!</h3>
+        <h1 style="font-weight: bold">Find the perfect photographer</h1>
+        <h3 id="info">For your next golden hour</h3>
       </div>
       <div class="bar">
         <v-autocomplete
@@ -69,7 +69,7 @@ export default {
       location_selected: "",
       budget_selected: 0,
       min_selected: 0,
-      available_types: ["wedding", "engagements", "family", "senior portraits"],
+      available_types: ["Wedding", "Engagements", "Family", "Senior Portraits"],
       available_locations: ["St.George", "Cedar City", "Provo"],
       budget_prices: [
         30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900,
@@ -79,72 +79,15 @@ export default {
       user_match: [],
     };
   },
-  created() {
-    db.collection("users").onSnapshot((res) => {
-      const changes = res.docChanges();
-      changes.forEach((change) => {
-        if (change.type == "added") {
-          this.users.push({
-            ...change.doc.data(),
-            id: change.doc.id,
-          });
-        } else if (change.type == "removed") {
-          this.users = this.users.filter((user) => user.id != change.doc.id);
-        } else if (change.type == "modified") {
-          this.users = this.users.map((user) => {
-            if (user.id == change.doc.id) {
-              return {
-                ...change.doc.data(),
-                id: change.doc.id,
-              };
-            } else {
-              return user;
-            }
-          });
-        } else {
-          console.log("error");
-        }
-      });
-    });
-  },
   methods: {
     search() {
-      console.log("search");
+      localStorage.setItem("type", this.type_selected);
+      localStorage.setItem("location", this.location_selected);
+      localStorage.setItem("budget", this.budget_selected);
       this.$router.push({
         path: "/search",
-        params: {
-          type: this.type_selected,
-          location: this.location_selected,
-          budget: this.budget_selected,
-        },
       });
-      // this.user_match = [];
-      // this.users.forEach((user) => {
-      //   if (
-      //     user.services[0].type == this.type_selected &&
-      //     user.location == this.location_selected &&
-      //     user.services[0].max >= this.budget_selected &&
-      //     user.services[0].min <= this.budget_selected
-      //   ) {
-      //     console.log("match");
-      //     this.user_match.push(user);
-      //   }
-      // });
     },
-    // onFormSubmit(event) {
-    //   event.preventDefault();
-    //   db.collection("users")
-    //     .add(this.user)
-    //     .then(() => {
-    //       alert("User successfully created!");
-    //       this.user.name = "";
-    //       this.user.email = "";
-    //       this.user.phone = "";
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
   },
   // components: {
   // Header,
@@ -187,11 +130,12 @@ body {
   width: 700px;
   justify-content: center;
   margin: auto;
-  padding-top: 100px;
+  padding-top: 125px;
 }
-#info{
-  color:#014023;
-  margin: 24px;
+#info {
+  color: #014023;
+  margin: 16px;
+  text-transform: uppercase;
 }
 
 .bar {
