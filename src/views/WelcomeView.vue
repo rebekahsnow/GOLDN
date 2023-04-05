@@ -1,21 +1,23 @@
 <template>
   <v-app id="inspire">
     <!-- <Header /> -->
-    <div>
+    <v-main>
       <v-app-bar color="transparent" :elevation="0" height="100px">
         <v-toolbar-title class="title">
-          <router-link to="/search" class="logo">GOLDN.</router-link>
+          <router-link to="/" class="logo">GOLDN.</router-link>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
           <v-btn text to="/login">Sign In</v-btn>
-          <v-btn text to="/register">Register</v-btn>
+          <v-btn text to="/photographer">Register</v-btn>
           <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
         </v-toolbar-items>
       </v-app-bar>
       <div class="welcome">
-        <h1 style="font-weight: bold">Find the perfect photographer</h1>
-        <h3 id="info">For your next golden hour</h3>
+        <h1 id="info">
+          Find the perfect photographer<br />
+          for your next golden hour
+        </h1>
       </div>
       <div class="bar">
         <v-autocomplete
@@ -42,25 +44,11 @@
           <v-icon @click="search()">mdi-magnify</v-icon>
         </div>
       </div>
-      <v-card>
-        <div class="col-md-6">
-          <!-- <div>match {{ user_match }}</div> -->
-          <div v-for="user in user_match" :key="user.id">
-            <h3>{{ user.fname }} {{ user.lname }}</h3>
-            {{ user.services[0].type }} Photographer in {{ user.location }}
-            <br />
-            Packages from ${{ user.services[0].min }} to ${{
-              user.services[0].max
-            }}
-          </div>
-        </div>
-      </v-card>
-    </div>
+    </v-main>
   </v-app>
 </template>
 <script>
 // import Header from "../components/TheHeader.vue";
-import { db } from "../config.js";
 export default {
   data() {
     return {
@@ -69,8 +57,17 @@ export default {
       location_selected: "",
       budget_selected: 0,
       min_selected: 0,
-      available_types: ["Wedding", "Engagements", "Family", "Senior Portraits"],
-      available_locations: ["St.George", "Cedar City", "Provo"],
+      available_types: [
+        "Bridal",
+        "Engagements",
+        "Family",
+        "Headshots",
+        "Senior Portrait",
+        "Sports",
+        "Styled",
+        "Wedding",
+      ],
+      available_locations: ["St.George", "Cedar City", "Utah County"],
       budget_prices: [
         30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900,
         1000, 2000, 4000,
@@ -100,7 +97,6 @@ export default {
   margin: 0;
   padding: 0;
 }
-
 html,
 body {
   height: 100%;
@@ -113,9 +109,15 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
 }
-
 .p {
   margin-bottom: 0px;
+}
+#heading {
+  /* font-family: "gimlet-display"; */
+  font-weight: 500;
+  font-size: 48px;
+  /* margin: 32px; */
+  text-align: center;
 }
 #inspire {
   background-image: url("../assets/horizon.png");
@@ -133,9 +135,8 @@ body {
   padding-top: 125px;
 }
 #info {
-  color: #014023;
   margin: 16px;
-  text-transform: uppercase;
+  font-size: 44px;
 }
 
 .bar {
@@ -230,8 +231,9 @@ input[type="text"]:focus {
 .logo {
   color: #014023;
   text-decoration: none;
-  font-family: "Gopher-Heavy";
+  font-family: "gimlet-display";
   font-size: 36px;
+  font-weight: bold;
   margin: 36px;
 }
 #pad {

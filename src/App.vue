@@ -16,38 +16,27 @@ export default {
 };
 </script>
 <style>
-/* #inspire{ */
-/* background-color: #f2d2b6; */
-/* margin: 32px; */
-/* } */
-/* .v-application--wrap{
-    display: inline;
-    background-color: #f2d2b6;
-} */
-h1 {
-  color: black;
-  font-family: "Gothic A1", sans-serif;
-  font-size: 48px;
-  margin: 32px;
-  text-align: center;
+.v-menu__content {
+  margin-top: 32px;
 }
-h3 {
-  color: black;
-  font-family: "Gopher";
-  font-size: 24px;
+h1 {
+  color: #1e1e1e;
+  font-family: "gimlet-display";
+  font-weight: 400;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 72px;
   margin: 32px;
   text-align: center;
-  text-transform: uppercase;
 }
 p {
-  color: #f2ede4;
+  color: #1e1e1e;
+  text-align: center;
   font-size: 24px;
-  /* margin: 36px; */
+  margin: 24px;
 }
+
 * {
-  font-family: "Gothic A1", sans-serif;
-  /* font-family: "Gopher"; */
-}
-.v-select__slot {margin-bottom: 24px;
+  font-family: "gimlet-display";
 }
 </style>

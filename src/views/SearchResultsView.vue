@@ -8,7 +8,7 @@
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
           <v-btn text to="/login">Sign In</v-btn>
-          <v-btn text to="/register">Register</v-btn>
+          <v-btn text to="/photographer">Register</v-btn>
           <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
         </v-toolbar-items>
       </v-app-bar>
@@ -73,8 +73,17 @@ export default {
       location_selected: "",
       budget_selected: 0,
       min_selected: 0,
-      available_types: ["Wedding", "Engagements", "Family", "Senior Portraits"],
-      available_locations: ["St.George", "Cedar City", "Provo"],
+      available_types: [
+        "Bridal",
+        "Engagements",
+        "Family",
+        "Headshots",
+        "Senior Portrait",
+        "Sports",
+        "Styled",
+        "Wedding",
+      ],
+      available_locations: ["St.George", "Cedar City", 'Utah County'],
       budget_prices: [
         30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900,
         1000, 2000, 4000,
@@ -179,6 +188,9 @@ body {
 }
 #inspire {
   background-color: #f2ede4;
+}
+.v-select__slot {
+  margin-bottom: 24px;
 }
 .logo {
   color: #014023;
@@ -313,5 +325,8 @@ input[type="text"]:focus {
 
 .selections {
   border-style: none !important;
+}
+.v-select__slot {
+  margin-bottom: 24px;
 }
 </style>
