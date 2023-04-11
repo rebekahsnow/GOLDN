@@ -4,7 +4,7 @@
     <v-main>
       <v-app-bar color="transparent" :elevation="0" height="100px">
         <v-toolbar-title class="title">
-          <router-link to="/" class="logo">GOLDN.</router-link>
+          <router-link to="/" class="logo">GOLDN</router-link>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
@@ -33,12 +33,15 @@
           rounded
         ></v-autocomplete>
 
-        <v-autocomplete
-          :items="budget_prices"
+        
+        <v-text-field
+          model-value="10.00"
+          prefix="$"
+          type="number"
           v-model="budget_selected"
           placeholder="Max Budget?"
           rounded
-        ></v-autocomplete>
+        ></v-text-field>
 
         <div class="search">
           <v-icon @click="search()">mdi-magnify</v-icon>
@@ -56,7 +59,6 @@ export default {
       type_selected: "",
       location_selected: "",
       budget_selected: 0,
-      min_selected: 0,
       available_types: [
         "Bridal",
         "Engagements",

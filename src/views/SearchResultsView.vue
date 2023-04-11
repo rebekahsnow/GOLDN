@@ -3,7 +3,7 @@
     <div>
       <v-app-bar color="transparent" :elevation="0" height="100px">
         <v-toolbar-title class="title">
-          <router-link to="/search" class="logo">GOLDN.</router-link>
+          <router-link to="/search" class="logo">GOLDN</router-link>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
@@ -27,12 +27,14 @@
           rounded
         ></v-autocomplete>
 
-        <v-autocomplete
-          :items="budget_prices"
+        <v-text-field
+          model-value="10.00"
+          prefix="$"
+          type="number"
           v-model="budget_selected"
           placeholder="Max Budget?"
           rounded
-        ></v-autocomplete>
+        ></v-text-field>
 
         <div class="search">
           <v-icon @click="search()">mdi-magnify</v-icon>
@@ -54,20 +56,43 @@
               {{ photographer.location }}
               {{ photographer.type }} packages from ${{ photographer.min }} to
               ${{ photographer.max }}
+              <!-- {{ photographer.images }} -->
             </div>
           </div>
         </v-card>
       </div>
+      <v-card class="results">
+        <div
+          v-for="photographer in photographer_match"
+          :key="photographer.id"
+          class="image_size"
+        ></div>
+        <div class="photographer_details">
+          <div id="name">Jennifer Doe</div>
+          <div class="detail">St. George, UT</div>
+          <div class="detail">
+            Wedding packages <br />
+            from $100 to $500
+          </div>
+          <v-btn id="green_btn">
+            VIEW MORE
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </div>
+      </v-card>
     </div>
   </v-app>
 </template>
 <script>
 // import Header from "../components/TheHeader.vue";
 import { db } from "../config.js";
+import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
 
 export default {
   data() {
     return {
+      names: [],
+      url: "",
       photographers: [],
       type_selected: "",
       location_selected: "",
@@ -76,18 +101,14 @@ export default {
       available_types: [
         "Bridal",
         "Engagements",
+        "Wedding",
         "Family",
         "Headshots",
         "Senior Portrait",
         "Sports",
         "Styled",
-        "Wedding",
       ],
-      available_locations: ["St.George", "Cedar City", 'Utah County'],
-      budget_prices: [
-        30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900,
-        1000, 2000, 4000,
-      ],
+      available_locations: ["St.George", "Cedar City", "Utah County"],
       show_results: true,
       photographer_match: [],
       loading: false,
@@ -105,9 +126,58 @@ export default {
     populateSearch() {
       this.type_selected = localStorage.getItem("type");
       this.location_selected = localStorage.getItem("location");
-      console.log(this.location_selected);
       this.budget_selected = parseInt(localStorage.getItem("budget"));
     },
+    getImages(id, folder) {
+      var names = [];
+      var urls = [];
+      const storage = getStorage();
+      const listRef = ref(storage, id + "/" + folder + "/");
+      listAll(listRef)
+        .then((res) => {
+          res.items.forEach((itemRef) => {
+            var temp = itemRef.name.toString();
+            names.push(temp);
+          });
+          for (let i = 0; i < names.length; i++) {
+            const starsRef = ref(storage, id + "/" + folder + "/" + names[i]);
+            // Get the download URL
+            getDownloadURL(starsRef)
+              .then((url) => {
+                // Insert url into an <img> tag to "download"
+                urls.push(url);
+              })
+              .catch((error) => {
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                switch (error.code) {
+                  case "storage/object-not-found":
+                    // File doesn't exist
+                    break;
+                  case "storage/unauthorized":
+                    // User doesn't have permission to access the object
+                    break;
+                  case "storage/canceled":
+                    // User canceled the upload
+                    break;
+
+                  case "storage/unknown":
+                    // Unknown error occurred, inspect the server response
+                    break;
+                }
+              });
+          }
+        })
+        .catch((error) => {
+          // Uh-oh, an error occurred!
+        });
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(urls);
+        }, 2000);
+      });
+    },
+
     getPhotographers() {
       db.collection("photographers").onSnapshot((res) => {
         const changes = res.docChanges();
@@ -140,30 +210,31 @@ export default {
       });
     },
     search() {
-      console.log("search");
       this.photographer_match = [];
-      console.log("this should be full", this.photographers);
-
       this.photographers.forEach((photographer) => {
         //loop through services
 
         photographer.services.forEach((service) => {
           if (
-            service.type == this.type_selected &&
-            photographer.location == this.location_selected &&
-            // service.max >= this.budget_selected &&
-            service.min <= this.budget_selected
+            service == this.type_selected &&
+            photographer.location == this.location_selected
+            // &&
+            // service.max <= this.budget_selected
           ) {
-            console.log("match");
-            this.photographer_match.push({
-              fname: photographer.fname,
-              lname: photographer.lname,
-              location: photographer.location,
-              type: service.type,
-              max: service.max,
-              min: service.min,
+            var folder = service.toLowerCase();
+            this.getImages(photographer.id, folder).then((urls) => {
+              this.photographer_match.push({
+                id: photographer.id,
+                fname: photographer.fname,
+                lname: photographer.lname,
+                location: photographer.location,
+                type: service,
+                images: urls,
+              });
             });
           } else {
+            // console.log(service)
+            // console.log(photographer.location)
             console.log("no match");
           }
         });
@@ -195,8 +266,9 @@ body {
 .logo {
   color: #014023;
   text-decoration: none;
-  font-family: "Gopher-Heavy";
+  font-family: "gimlet-display";
   font-size: 36px;
+  font-weight: bold;
   margin: 36px;
 }
 #pad {
@@ -236,20 +308,39 @@ body {
   width: 70%;
   border-radius: 40px;
   margin: auto;
-}
-.alignContainer {
-  padding: 20px;
-}
-.align2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .result_images {
-  width: 200px;
-  display: flex;
+  /* margin: auto;
+  padding: 18px; */
 }
-#photographer_details {
+.image_size {
+  object-fit: cover;
+  height: auto;
+  width: 70%;
+}
+.photographer_details {
   text-align: center;
   color: #014023;
+  padding: 18px 52px;
 }
+#name {
+  font-size: 24px;
+  text-transform: uppercase;
+}
+.detail {
+  padding-bottom: 16px;
+}
+#green_btn {
+  padding: 20px 15px 20px 25px;
+  color: #ffffff;
+  background-color: #014023;
+  text-transform: uppercase;
+  border-radius: 16px;
+}
+
 .bar div {
   border-radius: inherit;
   padding: 1.2rem 1.5rem;

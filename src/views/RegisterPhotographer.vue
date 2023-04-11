@@ -3,7 +3,7 @@
     <div>
       <v-app-bar color="transparent" :elevation="0" height="100px">
         <v-toolbar-title class="title">
-          <router-link to="/" class="logo">GOLDN.</router-link>
+          <router-link to="/" class="logo">GOLDN</router-link>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
@@ -27,17 +27,15 @@
             <v-row class="rowpad">
               <v-text-field
                 v-model="firstname"
-                :counter="10"
                 label="First name"
-                :rules="nameRules"
+                :rules="[(v) => !!v || 'First name is required']"
               ></v-text-field>
             </v-row>
             <v-row class="rowpad">
               <v-text-field
                 v-model="lastname"
-                :counter="10"
                 label="Last name"
-                :rules="nameRules"
+                :rules="[(v) => !!v || 'Last name is required']"
               ></v-text-field>
             </v-row>
 
@@ -90,17 +88,7 @@
               ></v-select>
             </v-row>
             <div @click="showMore(services)">CONTINUE</div>
-            <div v-if="wedding">
-              <!-- Upload examples of your wedding photography -->
-              <v-file-input
-                multiple
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon="mdi-camera"
-                label="Wedding Images"
-                v-model="weddingFiles"
-              ></v-file-input>
-            </div>
+
             <div v-if="bridal">
               <!-- Upload examples of your bridal photography -->
               <v-file-input
@@ -121,6 +109,28 @@
                 prepend-icon="mdi-camera"
                 label="Engagement Images"
                 v-model="engagementsFiles"
+              ></v-file-input>
+            </div>
+            <div v-if="wedding">
+              <!-- Upload examples of your wedding photography -->
+              <v-file-input
+                multiple
+                accept="image/png, image/jpeg, image/bmp"
+                placeholder="Pick an avatar"
+                prepend-icon="mdi-camera"
+                label="Wedding Images"
+                v-model="weddingFiles"
+              ></v-file-input>
+            </div>
+            <div v-if="family">
+              <!-- Upload examples of your family photography -->
+              <v-file-input
+                multiple
+                accept="image/png, image/jpeg, image/bmp"
+                placeholder="Pick an avatar"
+                prepend-icon="mdi-camera"
+                label="Family Images"
+                v-model="familyFiles"
               ></v-file-input>
             </div>
             <div v-if="headshots">
@@ -181,12 +191,12 @@ export default {
       types: [
         "Bridal",
         "Engagements",
+        "Wedding",
         "Family",
         "Headshots",
         "Senior Portrait",
         "Sports",
         "Styled",
-        "Wedding",
       ],
       services: [],
       wedding: false,
@@ -209,21 +219,9 @@ export default {
           return "E-mail or phone # is requred.";
         },
         (value) => {
-          if (value?.length <= 9) return true;
+          if (value?.length >= 9) return true;
 
           return "E-mail or phone # is requred.";
-        },
-      ],
-      nameRules: [
-        (value) => {
-          if (value) return true;
-
-          return "Name is requred.";
-        },
-        (value) => {
-          if (value?.length <= 10) return true;
-
-          return "Name must be less than 10 characters.";
         },
       ],
       valid: true,
@@ -249,6 +247,9 @@ export default {
         if (items[service] == "Engagements") {
           this.engagements = true;
         }
+        if (items[service] == "Family") {
+          this.family = true;
+        }
         if (items[service] == "Headshots") {
           this.headshots = true;
         }
@@ -263,10 +264,15 @@ export default {
     uploadImage(item, id, type) {
       //upload wedding upage to firebase storage
       const storage = getStorage();
+      console.log("jpeg?", item.type);
       const storageRef = ref(storage, id + "/" + type + "/" + item.name);
-      uploadBytes(storageRef, item).then((snapshot) => {
-        console.log("Uploaded a blob or file!");
-      });
+      uploadBytes(storageRef, item)
+        .then((snapshot) => {
+          console.log("Uploaded a blob or file!");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     uploadImages(id) {
       for (var item in this.weddingFiles) {
@@ -277,6 +283,9 @@ export default {
       }
       for (var item in this.engagementsFiles) {
         this.uploadImage(this.engagementsFiles[item], id, "engagements");
+      }
+      for (var item in this.familyFiles) {
+        this.uploadImage(this.familyFiles[item], id, "family");
       }
       for (var item in this.headshotsFiles) {
         this.uploadImage(this.headshotsFiles[item], id, "headshots");
@@ -332,8 +341,8 @@ body {
   color: #014023;
   text-decoration: none;
   font-family: "gimlet-display";
-  font-weight: bold;
   font-size: 36px;
+  font-weight: bold;
   margin: 36px;
 }
 p {
