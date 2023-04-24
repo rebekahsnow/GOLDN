@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/WelcomeView.vue'
 import SearchResultsView from '../views/SearchResultsView.vue'
-import Register from '../views/Register.vue'
 import RegisterPhotographer from '../views/RegisterPhotographer.vue'
+import Profile from '../views/Profile.vue'
+import Photographer from '../views/Photographer.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -20,13 +22,18 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: Register
+    component: RegisterPhotographer
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile
   },
   {
     path: '/photographer',
-    name: 'registerP',
-    component: RegisterPhotographer
-  },
+    name:'photographer',
+    component: Photographer
+  }
   
 ]
 

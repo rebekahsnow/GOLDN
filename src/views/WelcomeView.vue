@@ -8,8 +8,8 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
-          <v-btn text to="/login">Sign In</v-btn>
-          <v-btn text to="/photographer">Register</v-btn>
+          <v-btn text to="/photographer" class="nav">Sign In</v-btn>
+          <v-btn text to="/register" class="nav">Register</v-btn>
           <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
         </v-toolbar-items>
       </v-app-bar>
@@ -23,7 +23,7 @@
         <v-autocomplete
           :items="available_types"
           v-model="type_selected"
-          placeholder="Photoshoot Type"
+          placeholder="Type"
           rounded
         ></v-autocomplete>
         <v-autocomplete
@@ -33,7 +33,6 @@
           rounded
         ></v-autocomplete>
 
-        
         <v-text-field
           model-value="10.00"
           prefix="$"
@@ -53,21 +52,18 @@
 <script>
 // import Header from "../components/TheHeader.vue";
 export default {
+  name: "home",
   data() {
     return {
       users: [],
       type_selected: "",
       location_selected: "",
-      budget_selected: 0,
+      budget_selected: null,
       available_types: [
-        "Bridal",
-        "Engagements",
+        "Couple",
         "Family",
-        "Headshots",
-        "Senior Portrait",
-        "Sports",
-        "Styled",
-        "Wedding",
+        "Bridal/Wedding",
+        "Portrait",
       ],
       available_locations: ["St.George", "Cedar City", "Utah County"],
       budget_prices: [
@@ -107,7 +103,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: sans-serif;
+  /* font-family: "fields-display", sans-serif; */
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -115,7 +111,7 @@ body {
   margin-bottom: 0px;
 }
 #heading {
-  /* font-family: "gimlet-display"; */
+  /* font-family: "ivyepic"; */
   font-weight: 500;
   font-size: 48px;
   /* margin: 32px; */
@@ -233,14 +229,23 @@ input[type="text"]:focus {
 .logo {
   color: #014023;
   text-decoration: none;
-  font-family: "gimlet-display";
+  font-family: "ivymode";
   font-size: 36px;
   font-weight: bold;
+  letter-spacing: 0.2rem;
   margin: 36px;
 }
 #pad {
   color: #014023;
   margin-right: 36px;
-  font-family: "Gopher";
+}
+.v-btn {
+  font-family: "ivymode", sans-serif;
+  letter-spacing: 0.1rem;
+  font-style: bold;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: center;
 }
 </style>

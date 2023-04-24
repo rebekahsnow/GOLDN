@@ -3,12 +3,12 @@
     <div>
       <v-app-bar color="transparent" :elevation="0" height="100px">
         <v-toolbar-title class="title">
-          <router-link to="/search" class="logo">GOLDN</router-link>
+          <router-link to="/" class="logo">GOLDN</router-link>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
-          <v-btn text to="/login">Sign In</v-btn>
-          <v-btn text to="/photographer">Register</v-btn>
+          <v-btn text to="/login" class="nav">Sign In</v-btn>
+          <v-btn text to="/register" class="nav">Register</v-btn>
           <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
         </v-toolbar-items>
       </v-app-bar>
@@ -17,7 +17,7 @@
         <v-autocomplete
           :items="available_types"
           v-model="type_selected"
-          placeholder="Photoshoot Type"
+          placeholder="Type"
           rounded
         ></v-autocomplete>
         <v-autocomplete
@@ -40,46 +40,55 @@
           <v-icon @click="search()">mdi-magnify</v-icon>
         </div>
       </div>
+      <div v-if="!photographer_match.length" class="no_results">
+        <v-progress-circular
+          :size="100"
+          color="#014023"
+          indeterminate
+        ></v-progress-circular>
+      </div>
 
-      <div
-        v-for="photographer in photographer_match"
-        :key="photographer.id"
-        style="margin: 30px 0px"
-      >
-        <v-card class="results">
-          <div>
-            <div class="align2"></div>
-            <div class="align2" id="photographer_details">
-              <h3 style="color: #014023">
-                {{ photographer.fname }} {{ photographer.lname }}
-              </h3>
-              {{ photographer.location }}
-              {{ photographer.type }} packages from ${{ photographer.min }} to
-              ${{ photographer.max }}
-              <!-- {{ photographer.images }} -->
+      <div class="photographer_card">
+        <v-card
+          max-width="30%"
+          max-height="45%"
+          class="ma-4"
+          v-for="photographer in photographer_match"
+          :key="photographer.id"
+        >
+          <!-- <div class="result_images">
+            <img :src="photographer.images[0]" class="image_size" />
+            <img :src="photographer.images[1]" class="image_size" />
+            <img :src="photographer.images[2]" class="image_size" />
+          </div> -->
+          <v-carousel
+            show-arrows-on-hover
+            hide-delimiter-background
+            class="image_size"
+          >
+            <v-carousel-item
+              cover
+              v-for="(item, i) in photographer.images"
+              :key="i"
+              :src="photographer.images[i]"
+            ></v-carousel-item>
+          </v-carousel>
+          <div class="photographer_details">
+            <div id="name">
+              {{ photographer.fname }} {{ photographer.lname }}
             </div>
+            <!-- <div class="detail">{{ photographer.location }}</div> -->
+            <div class="detail">
+              {{ photographer.type }} Packages <br />
+              from ${{ photographer.min }} to ${{ photographer.max }}
+            </div>
+            <v-btn @click="viewMore(photographer.id)" id="green_btn">
+              VIEW MORE
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
           </div>
         </v-card>
       </div>
-      <v-card class="results">
-        <div
-          v-for="photographer in photographer_match"
-          :key="photographer.id"
-          class="image_size"
-        ></div>
-        <div class="photographer_details">
-          <div id="name">Jennifer Doe</div>
-          <div class="detail">St. George, UT</div>
-          <div class="detail">
-            Wedding packages <br />
-            from $100 to $500
-          </div>
-          <v-btn id="green_btn">
-            VIEW MORE
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </div>
-      </v-card>
     </div>
   </v-app>
 </template>
@@ -89,6 +98,7 @@ import { db } from "../config.js";
 import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
 
 export default {
+  name: "search",
   data() {
     return {
       names: [],
@@ -96,17 +106,12 @@ export default {
       photographers: [],
       type_selected: "",
       location_selected: "",
-      budget_selected: 0,
-      min_selected: 0,
+      budget_selected: null,
       available_types: [
-        "Bridal",
-        "Engagements",
-        "Wedding",
+        "Couple",
         "Family",
-        "Headshots",
-        "Senior Portrait",
-        "Sports",
-        "Styled",
+        "Bridal/Wedding",
+        "Portrait",
       ],
       available_locations: ["St.George", "Cedar City", "Utah County"],
       show_results: true,
@@ -115,19 +120,76 @@ export default {
       selection: 1,
     };
   },
-  created() {
+  async mounted() {
     this.getPhotographers();
-    this.populateSearch();
-
-    //why isnt search being called with a full list of photographers?
-    this.search();
   },
   methods: {
+    viewMore(id) {
+      // loop through each photographer in photographer_match and compare to id
+      this.photographer_match.forEach((item, index) => {
+        console.log(item);
+        if (item.id == id) {
+          localStorage.setItem("photographer", JSON.stringify(item));
+          this.$router.push("/photographer");
+        }
+      });
+    },
     populateSearch() {
       this.type_selected = localStorage.getItem("type");
       this.location_selected = localStorage.getItem("location");
       this.budget_selected = parseInt(localStorage.getItem("budget"));
     },
+    getProfilePhoto(id) {
+      var names = [];
+      var urls = [];
+      const storage = getStorage();
+      const listRef = ref(storage, id + "/profile/");
+      listAll(listRef)
+        .then((res) => {
+          res.items.forEach((itemRef) => {
+            var temp = itemRef.name.toString();
+            names.push(temp);
+            console.log(names);
+          });
+          for (let i = 0; i < names.length; i++) {
+            const starsRef = ref(storage, id + "/profile/" + names[i]);
+            // Get the download URL
+            getDownloadURL(starsRef)
+              .then((url) => {
+                // Insert url into an <img> tag to "download"
+                urls.push(url);
+              })
+              .catch((error) => {
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                switch (error.code) {
+                  case "storage/object-not-found":
+                    // File doesn't exist
+                    break;
+                  case "storage/unauthorized":
+                    // User doesn't have permission to access the object
+                    break;
+                  case "storage/canceled":
+                    // User canceled the upload
+                    break;
+
+                  case "storage/unknown":
+                    // Unknown error occurred, inspect the server response
+                    break;
+                }
+              });
+          }
+        })
+        .catch((error) => {
+          // Uh-oh, an error occurred!
+        });
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(urls);
+        }, 2000);
+      });
+    },
+
     getImages(id, folder) {
       var names = [];
       var urls = [];
@@ -138,6 +200,7 @@ export default {
           res.items.forEach((itemRef) => {
             var temp = itemRef.name.toString();
             names.push(temp);
+            console.log(names);
           });
           for (let i = 0; i < names.length; i++) {
             const starsRef = ref(storage, id + "/" + folder + "/" + names[i]);
@@ -207,30 +270,67 @@ export default {
           //   console.log("error");
           // }
         });
+        this.populateSearch();
+        this.search();
       });
     },
+    resetLocalStorage() {
+      localStorage.setItem("type", this.type_selected);
+      localStorage.setItem("location", this.location_selected);
+      localStorage.setItem("budget", this.budget_selected);
+    },
     search() {
+      this.resetLocalStorage();
       this.photographer_match = [];
       this.photographers.forEach((photographer) => {
         //loop through services
-
         photographer.services.forEach((service) => {
+          var min = Number(service.min);
+          var max = Number(service.max);
+          console.log(min);
+          var type = service.service;
+          var folder = type.toLowerCase();
+          console.log("type", type);
+          if (this.type_selected == "Bridal/Wedding"){
+            folder = "wedding";
+          }
           if (
-            service == this.type_selected &&
-            photographer.location == this.location_selected
-            // &&
-            // service.max <= this.budget_selected
+            type == this.type_selected &&
+            photographer.location == this.location_selected &&
+            min <= this.budget_selected
           ) {
-            var folder = service.toLowerCase();
             this.getImages(photographer.id, folder).then((urls) => {
-              this.photographer_match.push({
-                id: photographer.id,
-                fname: photographer.fname,
-                lname: photographer.lname,
-                location: photographer.location,
-                type: service,
-                images: urls,
+              console.log("first name", photographer.firstname);
+              this.getProfilePhoto(photographer.id).then((url) => {
+                console.log("url", url);
+                this.photographer_match.push({
+                  id: photographer.id,
+                  fname: photographer.firstname,
+                  lname: photographer.lastname,
+                  contact: photographer.contact,
+                  about: photographer.about,
+                  insta: photographer.insta,
+                  location: photographer.location,
+                  type: type,
+                  min: min,
+                  max: max,
+                  images: urls,
+                  profile: url,
+                });
               });
+              // this.photographer_match.push({
+              //   id: photographer.id,
+              //   fname: photographer.firstname,
+              //   lname: photographer.lastname,
+              //   contact: photographer.contact,
+              //   about: photographer.about,
+              //   insta: photographer.insta,
+              //   location: photographer.location,
+              //   type: type,
+              //   min: min,
+              //   max: max,
+              //   images: urls,
+              // });
             });
           } else {
             // console.log(service)
@@ -266,15 +366,16 @@ body {
 .logo {
   color: #014023;
   text-decoration: none;
-  font-family: "gimlet-display";
+  font-family: "ivymode";
   font-size: 36px;
   font-weight: bold;
+  letter-spacing: 0.2rem;
   margin: 36px;
 }
 #pad {
   color: #014023;
   margin-right: 36px;
-  font-family: "Gopher";
+  /* font-family: "Gopher"; */
 }
 
 .p {
@@ -303,9 +404,15 @@ body {
   margin: auto;
   margin-top: 36px;
 }
+.photographer_card {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 3% 14%;
+  justify-content: center;
+}
 .results {
-  height: 250px;
-  width: 70%;
+  /* height: 250px;
+  width: 70%; */
   border-radius: 40px;
   margin: auto;
   display: flex;
@@ -313,13 +420,18 @@ body {
   justify-content: center;
 }
 .result_images {
-  /* margin: auto;
-  padding: 18px; */
+  padding: 18px 0px 14px 18px;
 }
 .image_size {
   object-fit: cover;
-  height: auto;
-  width: 70%;
+  object-position: 50% 50%;
+  float: left;
+  /* max-height: 300px;
+  max-width: 500px; */
+  padding: 8px;
+  border-radius: 10px;
+  max-height: 400px;
+  max-width: 400px;
 }
 .photographer_details {
   text-align: center;
@@ -419,5 +531,18 @@ input[type="text"]:focus {
 }
 .v-select__slot {
   margin-bottom: 24px;
+}
+.v-btn {
+  font-family: "ivymode", sans-serif;
+  letter-spacing: 0.1rem;
+  font-style: bold;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: center;
+}
+.no_results {
+  text-align: center;
+  margin: 250px 120px;
 }
 </style>

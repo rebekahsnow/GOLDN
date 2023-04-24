@@ -3,7 +3,7 @@
     <v-autocomplete
       :items="available_types"
       v-model="type_selected"
-      placeholder="Photoshoot Type"
+      placeholder="Style"
       rounded
     ></v-autocomplete>
     <v-autocomplete
@@ -33,8 +33,8 @@ export default {
       available_types: ["wedding", "engagements", "family", "senior portraits"],
       available_locations: ["St.George", "Cedar City", "Provo"],
       budget_prices: [
-          30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900, 1000,
-          2000, 4000,
+        30, 40, 50, 60, 70, 80, 90, 100, 300, 400, 500, 600, 700, 800, 900,
+        1000, 2000, 4000,
       ],
       type_selected: "",
       location_selected: "",
@@ -57,7 +57,7 @@ export default {
           this.user_match.push(user);
         }
       });
-    }
+    },
   },
 };
 </script>
