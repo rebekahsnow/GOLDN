@@ -47,7 +47,7 @@
           indeterminate
         ></v-progress-circular>
       </div>
-
+      <div v-if="no_match">NO MATCH</div>
       <div class="photographer_card">
         <v-card
           max-width="30%"
@@ -107,17 +107,13 @@ export default {
       type_selected: "",
       location_selected: "",
       budget_selected: null,
-      available_types: [
-        "Couple",
-        "Family",
-        "Bridal/Wedding",
-        "Portrait",
-      ],
+      available_types: ["Couple", "Family", "Bridal/Wedding", "Portrait"],
       available_locations: ["St.George", "Cedar City", "Utah County"],
       show_results: true,
       photographer_match: [],
       loading: false,
       selection: 1,
+      no_match: false,
     };
   },
   async mounted() {
@@ -291,7 +287,7 @@ export default {
           var type = service.service;
           var folder = type.toLowerCase();
           console.log("type", type);
-          if (this.type_selected == "Bridal/Wedding"){
+          if (this.type_selected == "Bridal/Wedding") {
             folder = "wedding";
           }
           if (
@@ -318,19 +314,6 @@ export default {
                   profile: url,
                 });
               });
-              // this.photographer_match.push({
-              //   id: photographer.id,
-              //   fname: photographer.firstname,
-              //   lname: photographer.lastname,
-              //   contact: photographer.contact,
-              //   about: photographer.about,
-              //   insta: photographer.insta,
-              //   location: photographer.location,
-              //   type: type,
-              //   min: min,
-              //   max: max,
-              //   images: urls,
-              // });
             });
           } else {
             // console.log(service)
@@ -338,7 +321,7 @@ export default {
             console.log("no match");
           }
         });
-      });
+      }) 
     },
   },
   // components: {

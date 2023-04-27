@@ -5,6 +5,7 @@ import SearchResultsView from '../views/SearchResultsView.vue'
 import RegisterPhotographer from '../views/RegisterPhotographer.vue'
 import Profile from '../views/Profile.vue'
 import Photographer from '../views/Photographer.vue'
+import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const routes = [
     path: '/photographer',
     name:'photographer',
     component: Photographer
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
   }
   
 ]

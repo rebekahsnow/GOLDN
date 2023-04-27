@@ -8,7 +8,7 @@
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
           <v-btn text to="/login" class="nav">Sign Out</v-btn>
-          <v-btn text to="/photographer" class="nav">Register</v-btn>
+          <v-btn text to="/register" class="nav">Register</v-btn>
           <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
         </v-toolbar-items>
       </v-app-bar>
@@ -91,7 +91,7 @@
               ></v-select>
             </v-row>
             <!-- <v-btn class="btn" @click="showMore(services)">CONTINUE</v-btn> -->
-            <v-btn class="btn">SAVE</v-btn>
+            <v-btn class="btn" @click="updateDB()">SAVE</v-btn>
             <div v-if="bridal">
               <!-- Upload examples of your bridal photography -->
               <v-file-input
@@ -302,13 +302,10 @@ export default {
       locations: ["Cedar City", "St.George", "Utah County"],
       location: "",
       types: [
-        "Bridal",
-        "Engagements",
-        "Wedding",
+        "Couple",
         "Family",
-        "Headshots",
-        "Senior Portrait",
-        "Sports",
+        "Bridal/Wedding",
+        "Portrait",
       ],
       services: [],
       wedding: false,
@@ -355,153 +352,79 @@ export default {
       valid: true,
     };
   },
+  async mounted() {
+    this.loadPhotographer();
 
+  },
   methods: {
-    async validate() {
-      const valid = await this.$refs.form.validate();
-      console.log(valid);
-      if (valid) {
-        this.postPhotographer();
-      }
-    },
-    showMore(items) {
-      for (var service in items) {
-        if (items[service] == "Wedding") {
-          this.wedding = true;
-        }
-        if (items[service] == "Bridal") {
-          this.bridal = true;
-        }
-        if (items[service] == "Engagements") {
-          this.engagements = true;
-        }
-        if (items[service] == "Family") {
-          this.family = true;
-        }
-        if (items[service] == "Headshots") {
-          this.headshots = true;
-        }
-        if (items[service] == "Sports") {
-          this.sports = true;
-        }
-        if (items[service] == "Senior Portrait") {
-          this.senior = true;
-        }
-      }
-    },
-    uploadImage(item, id, type) {
-      //upload wedding upage to firebase storage
-      const storage = getStorage();
-      console.log("jpeg?", item.type);
-      const storageRef = ref(storage, id + "/" + type + "/" + item.name);
-      uploadBytes(storageRef, item)
-        .then((snapshot) => {
-          console.log("Uploaded a blob or file!");
-          this.resetFields();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    uploadImages(id) {
-      for (var item in this.weddingFiles) {
-        this.uploadImage(this.weddingFiles[item], id, "wedding");
-      }
-      for (var item in this.bridalFiles) {
-        this.uploadImage(this.bridalFiles[item], id, "bridal");
-      }
-      for (var item in this.engagementsFiles) {
-        this.uploadImage(this.engagementsFiles[item], id, "engagements");
-      }
-      for (var item in this.familyFiles) {
-        this.uploadImage(this.familyFiles[item], id, "family");
-      }
-      for (var item in this.headshotsFiles) {
-        this.uploadImage(this.headshotsFiles[item], id, "headshots");
-      }
-      for (var item in this.seniorFiles) {
-        this.uploadImage(this.seniorFiles[item], id, "senior");
-      }
-      for (var item in this.sportsFiles) {
-        this.uploadImage(this.sportsFiles[item], id, "sports");
-      }
-    },
-    postPhotographer() {
-      var items = [];
-      for (var service in this.services) {
-        console.log("this", this.services[service]);
-        if (this.services[service] == "Wedding") {
-          items.push({
-            service: this.services[service],
-            min: this.min_wedding,
-            max: this.max_wedding,
-          });
-        }
-        if (this.services[service] == "Bridal") {
-          items.push({
-            service: this.services[service],
-            min: this.min_bridal,
-            max: this.max_bridal,
-          });
-        }
-        if (this.services[service] == "Engagements") {
-          items.push({
-            service: this.services[service],
-            min: this.min_engagements,
-            max: this.max_engagements,
-          });
-        }
-        if (this.services[service] == "Family") {
-          items.push({
-            service: this.services[service],
-            min: this.min_family,
-            max: this.max_family,
-          });
-        }
-        if (this.services[service] == "Headshots") {
-          items.push({
-            service: this.services[service],
-            min: this.min_headshots,
-            max: this.max_headshots,
-          });
-        }
-        if (this.services[service] == "Senior Portrait") {
-          items.push({
-            service: this.services[service],
-            min: this.min_senior,
-            max: this.max_senior,
-          });
-        }
-        if (this.services[service] == "Sports") {
-          items.push({
-            service: this.services[service],
-            min: this.min_sports,
-            max: this.max_sports,
-          });
-        }
-      }
+    updateDB(){
+      // update fields in database
       db.collection("photographers")
-        .add({
+        .doc(this.photographerId)
+        .update({
           firstname: this.firstname,
           lastname: this.lastname,
           contact: this.contact,
           about: this.about,
           insta: this.insta,
           location: this.location,
-          services: items,
+          services: this.services,
         })
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-          this.uploadImages(docRef.id);
+        .then(() => {
+          alert("Document successfully updated!");
+
         })
         .catch((error) => {
-          console.error("Error adding document: ", error);
+          console.error("Error updating document: ", error);
         });
     },
-    resetFields() {
-      //successful registration
+    populateServices(photographer){
+      photographer.services.forEach(type => {
+        this.services.push(type.service);
+      });
     },
+    loadPhotographer(){
+        const photographer = JSON.parse(localStorage.getItem("photographer"));
+        this.photographerId = photographer.id;
+        this.firstname = photographer.firstname;
+        this.lastname = photographer.lastname;
+        this.contact = photographer.contact;
+        this.about = photographer.about;
+        this.insta = photographer.insta;
+        this.location = photographer.location;
+        this.populateServices(photographer);
+    //     this.wedding = photographer.wedding;
+    //     this.bridal = photographer.bridal;
+    //     this.engagements = photographer.engagements;
+    //     this.headshots = photographer.headshots;
+    //     this.senior = photographer.senior;
+    //     this.sports = photographer.sports;
+    //     this.family = photographer.family;
+    //     this.min_bridal = photographer.min_bridal;
+    //     this.max_bridal = photographer.max_bridal;
+    //     this.min_engagements = photographer.min_engagements;
+    //     this.max_engagements = photographer.max_engagements;
+    //     this.min_wedding = photographer.min_wedding;
+    //     this.max_wedding = photographer.max_wedding;
+    //     this.min_family = photographer.min_family;
+    //     this.max_family = photographer.max_family;
+    //     this.min_headshots = photographer.min_headshots;
+    //     this.max_headshots = photographer.max_headshots;
+    //     this.min_senior = photographer.min_senior;
+    //     this.max_senior = photographer.max_senior;
+    //     this.min_sports = photographer.min_sports;
+    //     this.max_sports = photographer.max_sports;
+    //     this.familyFiles = photographer.familyFiles;
+    //     this.weddingFiles = photographer.weddingFiles;
+    //     this.bridalFiles = photographer.bridalFiles;
+    //     this.engagementsFiles = photographer.engagementsFiles;
+    //     this.headshotsFiles = photographer.headshotsFiles;
+    //     this.seniorFiles = photographer.seniorFiles;
+    //     this.sportsFiles = photographer.sportsFiles;
+    }
   },
+
+
 };
 </script>
 <style scoped>

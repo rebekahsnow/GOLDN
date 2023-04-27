@@ -8,7 +8,7 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" id="pad">
-          <v-btn text to="/photographer" class="nav">Sign In</v-btn>
+          <v-btn text to="/login" class="nav">Sign In</v-btn>
           <v-btn text to="/register" class="nav">Register</v-btn>
           <!-- <v-btn text to="/search"><v-icon>mdi-magnify</v-icon></v-btn> -->
         </v-toolbar-items>

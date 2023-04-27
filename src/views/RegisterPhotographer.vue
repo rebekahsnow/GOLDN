@@ -35,6 +35,20 @@
           <v-container>
             <v-row class="rowpad">
               <v-text-field
+                v-model="firstname"
+                label="First name"
+                :rules="[(v) => !!v || 'First name is required']"
+              ></v-text-field>
+            </v-row>
+            <v-row class="rowpad">
+              <v-text-field
+                v-model="lastname"
+                label="Last name"
+                :rules="[(v) => !!v || 'Last name is required']"
+              ></v-text-field>
+            </v-row>
+            <v-row class="rowpad">
+              <v-text-field
                 v-model="email"
                 label="Email"
                 required
@@ -50,21 +64,6 @@
                 :rules="[(v) => !!v || 'Password is required']"
               ></v-text-field>
             </v-row>
-            <v-row class="rowpad">
-              <v-text-field
-                v-model="firstname"
-                label="First name"
-                :rules="[(v) => !!v || 'First name is required']"
-              ></v-text-field>
-            </v-row>
-            <v-row class="rowpad">
-              <v-text-field
-                v-model="lastname"
-                label="Last name"
-                :rules="[(v) => !!v || 'Last name is required']"
-              ></v-text-field>
-            </v-row>
-
             <v-row class="rowpad">
               <v-file-input
                 accept="image/png, image/jpeg, image/bmp"
@@ -140,33 +139,41 @@
           <v-form ref="form2">
             <v-container>
               <!-- Upload examples of your couple photography -->
-              <v-file-input
-                multiple
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon="mdi-camera"
-                label="Couple Images"
-                v-model="coupleFiles"
-              ></v-file-input>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="min_couple"
-                placeholder="Minimum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="max_couple"
-                placeholder="Maximum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                type="number"
-                v-model="couple_types"
-                placeholder="# Different Couple Packages Offered"
-              ></v-text-field>
+              <v-row class="rowpad">
+                <v-file-input
+                  multiple
+                  accept="image/png, image/jpeg, image/bmp"
+                  prepend-icon="mdi-camera"
+                  label="Couple Images"
+                  v-model="coupleFiles"
+                ></v-file-input>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="min_couple"
+                  label="Minimum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="max_couple"
+                  label="Maximum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  type="number"
+                  v-model="couple_types"
+                  label="# Different Couple Packages Offered"
+                  variant="underlined"
+                ></v-text-field>
+              </v-row>
             </v-container>
           </v-form>
         </div>
@@ -177,33 +184,41 @@
           <v-form ref="form2">
             <v-container>
               <!-- Upload examples of your family photography -->
-              <v-file-input
-                multiple
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon="mdi-camera"
-                label="Family Images"
-                v-model="familyFiles"
-              ></v-file-input>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="min_family"
-                placeholder="Minimum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="max_family"
-                placeholder="Maximum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                type="number"
-                v-model="family_types"
-                placeholder="# Different Family Packages Offered"
-              ></v-text-field>
+              <v-row class="rowpad">
+                <v-file-input
+                  multiple
+                  accept="image/png, image/jpeg, image/bmp"
+                  prepend-icon="mdi-camera"
+                  label="Family Images"
+                  v-model="familyFiles"
+                ></v-file-input>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="min_family"
+                  label="Minimum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="max_family"
+                  label="Maximum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  type="number"
+                  v-model="family_types"
+                  label="# Different Family Packages Offered"
+                  variant="underlined"
+                ></v-text-field>
+              </v-row>
             </v-container>
           </v-form>
         </div>
@@ -214,33 +229,41 @@
           <v-form ref="form2">
             <v-container>
               <!-- Upload examples of your wedding photography -->
-              <v-file-input
-                multiple
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon="mdi-camera"
-                label="Wedding Images"
-                v-model="weddingFiles"
-              ></v-file-input>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="min_wedding"
-                placeholder="Minimum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="max_wedding"
-                placeholder="Maximum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                type="number"
-                v-model="wedding_types"
-                placeholder="# Different Bridal/Wedding Packages Offered"
-              ></v-text-field>
+              <v-row class="rowpad">
+                <v-file-input
+                  multiple
+                  accept="image/png, image/jpeg, image/bmp"
+                  prepend-icon="mdi-camera"
+                  label="Wedding Images"
+                  v-model="weddingFiles"
+                ></v-file-input>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="min_wedding"
+                  label="Minimum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="max_wedding"
+                  label="Maximum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  type="number"
+                  v-model="wedding_types"
+                  label="# Different Bridal/Wedding Packages Offered"
+                  variant="underlined"
+                ></v-text-field>
+              </v-row>
             </v-container>
           </v-form>
         </div>
@@ -251,33 +274,41 @@
           <v-form ref="form2">
             <v-container>
               <!-- Upload examples of your portrait photography -->
-              <v-file-input
-                multiple
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon="mdi-camera"
-                label="Portrait Images"
-                v-model="portraitFiles"
-              ></v-file-input>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="min_portrait"
-                placeholder="Minimum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="max_portrait"
-                placeholder="Maximum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                type="number"
-                v-model="portrait_types"
-                placeholder="# Different Portrait Packages Offered"
-              ></v-text-field>
+              <v-row class="rowpad">
+                <v-file-input
+                  multiple
+                  accept="image/png, image/jpeg, image/bmp"
+                  prepend-icon="mdi-camera"
+                  label="Portrait Images"
+                  v-model="portraitFiles"
+                ></v-file-input>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="min_portrait"
+                  label="Minimum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="max_portrait"
+                  label="Maximum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  type="number"
+                  v-model="portrait_types"
+                  label="# Different Portrait Packages Offered"
+                  variant="underlined"
+                ></v-text-field>
+              </v-row>
             </v-container>
           </v-form>
         </div>
@@ -288,33 +319,41 @@
           <v-form ref="form2">
             <v-container>
               <!-- Upload examples of your senior photography -->
-              <v-file-input
-                multiple
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon="mdi-camera"
-                label="Sports Images"
-                v-model="sportsFiles"
-              ></v-file-input>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="min_sports"
-                placeholder="Minimum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                prefix="$"
-                type="number"
-                v-model="max_sports"
-                placeholder="Maximum Price?"
-                :rules="[(v) => !!v || 'Price is required']"
-              ></v-text-field>
-              <v-text-field
-                type="number"
-                v-model="sports_types"
-                placeholder="# Different Sports Packages Offered"
-              ></v-text-field>
+              <v-row class="rowpad">
+                <v-file-input
+                  multiple
+                  accept="image/png, image/jpeg, image/bmp"
+                  prepend-icon="mdi-camera"
+                  label="Sports Images"
+                  v-model="sportsFiles"
+                ></v-file-input>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="min_sports"
+                  label="Minimum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  prefix="$"
+                  type="number"
+                  v-model="max_sports"
+                  label="Maximum Price?"
+                  :rules="[(v) => !!v || 'Price is required']"
+                ></v-text-field>
+              </v-row>
+              <v-row class="rowpad">
+                <v-text-field
+                  type="number"
+                  v-model="sports_types"
+                  label="# Different Sports Packages Offered"
+                  variant="underlined"
+                ></v-text-field>
+              </v-row>
             </v-container>
           </v-form>
         </div>
@@ -332,21 +371,27 @@
             <v-form ref="form3">
               <v-container>
                 <p>Couple Package {{ index }}</p>
-                <v-text-field
-                  placeholder="Package Name"
-                  :rules="[(v) => !!v || 'Package Name is required']"
-                  v-model="couple_names[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
-                  :rules="[(v) => !!v || 'Package Description is required']"
-                  v-model="couple_descriptions[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Price"
-                  :rules="[(v) => !!v || 'Price is required']"
-                  v-model="couple_prices[index]"
-                ></v-text-field>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Name"
+                    :rules="[(v) => !!v || 'Package Name is required']"
+                    v-model="couple_names[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
+                    :rules="[(v) => !!v || 'Package Description is required']"
+                    v-model="couple_descriptions[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Price"
+                    :rules="[(v) => !!v || 'Price is required']"
+                    v-model="couple_prices[index]"
+                  ></v-text-field>
+                </v-row>
               </v-container>
             </v-form>
           </div>
@@ -359,21 +404,27 @@
             <v-form ref="form3">
               <v-container>
                 <p>Family Package {{ index }}</p>
-                <v-text-field
-                  placeholder="Package Name"
-                  :rules="[(v) => !!v || 'Package Name is required']"
-                  v-model="family_names[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
-                  :rules="[(v) => !!v || 'Package Description is required']"
-                  v-model="family_descriptions[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Price"
-                  :rules="[(v) => !!v || 'Price is required']"
-                  v-model="family_prices[index]"
-                ></v-text-field>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Name"
+                    :rules="[(v) => !!v || 'Package Name is required']"
+                    v-model="family_names[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
+                    :rules="[(v) => !!v || 'Package Description is required']"
+                    v-model="family_descriptions[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Price"
+                    :rules="[(v) => !!v || 'Price is required']"
+                    v-model="family_prices[index]"
+                  ></v-text-field>
+                </v-row>
               </v-container>
             </v-form>
           </div>
@@ -386,21 +437,27 @@
             <v-form ref="form3">
               <v-container>
                 <p>Bridal/Wedding Package {{ index }}</p>
-                <v-text-field
-                  placeholder="Package Name"
-                  :rules="[(v) => !!v || 'Package Name is required']"
-                  v-model="wedding_names[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
-                  :rules="[(v) => !!v || 'Package Description is required']"
-                  v-model="wedding_descriptions[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Price"
-                  :rules="[(v) => !!v || 'Price is required']"
-                  v-model="wedding_prices[index]"
-                ></v-text-field>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Name"
+                    :rules="[(v) => !!v || 'Package Name is required']"
+                    v-model="wedding_names[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
+                    :rules="[(v) => !!v || 'Package Description is required']"
+                    v-model="wedding_descriptions[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Price"
+                    :rules="[(v) => !!v || 'Price is required']"
+                    v-model="wedding_prices[index]"
+                  ></v-text-field>
+                </v-row>
               </v-container>
             </v-form>
           </div>
@@ -413,21 +470,27 @@
             <v-form ref="form3">
               <v-container>
                 <p>Portrait Package {{ index }}</p>
-                <v-text-field
-                  placeholder="Package Name"
-                  :rules="[(v) => !!v || 'Package Name is required']"
-                  v-model="portrait_names[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
-                  :rules="[(v) => !!v || 'Package Description is required']"
-                  v-model="portrait_descriptions[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Price"
-                  :rules="[(v) => !!v || 'Price is required']"
-                  v-model="portrait_prices[index]"
-                ></v-text-field>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Name"
+                    :rules="[(v) => !!v || 'Package Name is required']"
+                    v-model="portrait_names[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
+                    :rules="[(v) => !!v || 'Package Description is required']"
+                    v-model="portrait_descriptions[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Price"
+                    :rules="[(v) => !!v || 'Price is required']"
+                    v-model="portrait_prices[index]"
+                  ></v-text-field>
+                </v-row>
               </v-container>
             </v-form>
           </div>
@@ -440,21 +503,27 @@
             <v-form ref="form3">
               <v-container>
                 <p>Sports Package {{ index }}</p>
-                <v-text-field
-                  placeholder="Package Name"
-                  :rules="[(v) => !!v || 'Package Name is required']"
-                  v-model="sports_names[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
-                  :rules="[(v) => !!v || 'Package Description is required']"
-                  v-model="sports_descriptions[index]"
-                ></v-text-field>
-                <v-text-field
-                  placeholder="Package Price"
-                  :rules="[(v) => !!v || 'Price is required']"
-                  v-model="sports_prices[index]"
-                ></v-text-field>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Name"
+                    :rules="[(v) => !!v || 'Package Name is required']"
+                    v-model="sports_names[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Description. Ex (1 hour, 2 locations, 50 edited images, 2 outfits)"
+                    :rules="[(v) => !!v || 'Package Description is required']"
+                    v-model="sports_descriptions[index]"
+                  ></v-text-field>
+                </v-row>
+                <v-row class="rowpad">
+                  <v-text-field
+                    label="Package Price"
+                    :rules="[(v) => !!v || 'Price is required']"
+                    v-model="sports_prices[index]"
+                  ></v-text-field>
+                </v-row>
               </v-container>
             </v-form>
           </div>
@@ -469,6 +538,8 @@
 </template>
 <script>
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 import { db } from "../config.js";
 
 // import { storage } from "../config.js";
@@ -556,10 +627,27 @@ export default {
       view1: true,
       view2: false,
       view3: false,
+      user: null,
+      loginId: "",
     };
   },
 
   methods: {
+    createUser() {
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, this.email, this.password)
+        .then((userCredential) => {
+          // Signed in
+          this.user = userCredential.user;
+          this.loginId = this.user.uid;
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+        });
+    },
     back() {
       this.view1 = true;
       this.view2 = false;
@@ -577,6 +665,7 @@ export default {
         this.view1 = false;
         this.view2 = true;
       }
+      this.createUser();
     },
     async validate2() {
       const valid = await this.$refs.form2.validate();
@@ -633,7 +722,7 @@ export default {
           console.log(error);
         });
     },
-		
+
     uploadImages(id) {
       this.uploadImage(this.profilePhoto, id, "profile");
       for (var item in this.coupleFiles) {
@@ -651,7 +740,6 @@ export default {
       for (var item in this.sportsFiles) {
         this.uploadImage(this.sportsFiles[item], id, "sports");
       }
-
     },
     postPhotographer() {
       var items = [];
@@ -711,6 +799,7 @@ export default {
       }
       db.collection("photographers")
         .add({
+          loginId: this.loginId,
           firstname: this.firstname,
           lastname: this.lastname,
           contact: this.contact,
