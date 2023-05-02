@@ -1,4 +1,4 @@
-# GOLDN
+# [GOLDN](goldnhour.web.app)
 
 GOLDN is my senior capstone project aimed at solving 2 problems 
 
@@ -25,6 +25,10 @@ Problem #2 - There is not one central location where clients can compare photogr
 - **Local Storage**
 - **Firebase Storage & Firestore Database**
 - **Firebase Authentication**
+
+<img width="30%" alt="Screen Shot 2023-05-01 at 10 35 59 PM" src="https://user-images.githubusercontent.com/70713646/235580275-a607c0cb-fec7-4291-bceb-5e6e43955661.png"> <img width="30%" alt="Screen Shot 2023-05-01 at 10 36 12 PM" src="https://user-images.githubusercontent.com/70713646/235580300-6d08d8d8-2e04-4a6a-b5c4-91f68545f150.png">
+<img width="30%" alt="Screen Shot 2023-05-01 at 10 36 23 PM" src="https://user-images.githubusercontent.com/70713646/235580349-c8c34563-3cfe-4469-96d5-66ad909021c1.png">
+
 
 
 ## Project setup
