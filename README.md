@@ -1,5 +1,3 @@
-Thank you for sharing the repository. Here's a mockup description of your senior capstone project based on the repository:
-
 # GOLDN
 
 GOLDN is my senior capstone project aimed at solving 2 problems 
